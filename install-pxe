@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+sed -i -e "s,kr\.archive\.ubuntu\.com,ftp\.daum\.net,g" /etc/apt/sources.list
+apt-get update -fy
+apt-get upgrade -fy
+apt-get install -fy tftp-hpa
