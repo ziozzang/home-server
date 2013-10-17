@@ -45,7 +45,7 @@ cat > /etc/xl2tpd/xl2tpd.conf << EOF
 port = ${SERVICE_PORT}
 
 [lns default]    
-ip range = 10.7.0.2-10.7.0.200
+ip range = 10.245.0.2-10.245.0.200
 local ip = ${LOCAL_IP}
 length bit = yes
 require chap = yes
@@ -74,9 +74,11 @@ cat >> /etc/ppp/chap-secrets << EOF
 ${USER_ID} l2tpd ${USER_PW} *
 EOF
 
-
-iptables -A FORWARD -s 10.7.0.0/24 -j ACCEPT
-iptables -t nat -A POSTROUTING -s 10.7.0.0/24 -o eth0 -j MASQUERADE
+IPF=`iptables-save  | grep "10.245.0.0" | wc -l`
+if [[ "$IPF" -eq "0" ]]; then
+  iptables -A FORWARD -s 10.245.0.0/24 -j ACCEPT
+  iptables -t nat -A POSTROUTING -s 10.245.0.0/24 -o eth0 -j MASQUERADE
+fi
 wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserve-iptables-ubuntu | bash
 
 ufw allow ${SERVICE_PORT}/tcp
