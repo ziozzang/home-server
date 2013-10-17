@@ -12,9 +12,10 @@ fi
 EOF
 
 cat > /etc/rc.run_once << EOF
-#!/bin/bash -x
+#!/bin/bash
 mkdir -p /root/.ssh
 cd /root/.ssh
+rm -f /root/.ssh/authorized_keys
 wget http://home.jioh.net/pxe/authorized_keys
 chmod -R 700 /root/.ssh
 
