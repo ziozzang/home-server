@@ -1,0 +1,8 @@
+#!/bin/bash
+
+TIME_MIN=`python -c "import random; print int(random.random() * 60)"`
+
+cat > /etc/cron.d/timesync << EOF
+# For Every *:${TIME_MIN} / KST time Sync Server
+${TIME_MIN} * * * * root rdate -s time.bora.net
+EOF
