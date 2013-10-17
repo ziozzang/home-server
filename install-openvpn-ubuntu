@@ -1,0 +1,119 @@
+#!/bin/bash
+SERVICE_PORT=${SERVICE_PORT:-"1194"}
+KEY_SIZE=${KEY_SIZE:-"1024"}
+USER_ID=${USER_ID:-"ziozzang"}
+E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
+
+#-----------
+[[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
+LOCAL_IP=`ifconfig eth0 | grep -m 1 'inet addr:' | cut -d: -f2 | awk '{print $1}'`
+
+apt-get update -fy
+apt-get install -fy openvpn
+
+mkdir /etc/openvpn/easy-rsa/
+cp -r /usr/share/doc/openvpn/examples/easy-rsa/2.0/* /etc/openvpn/easy-rsa/
+
+sed -i -e "s,\(KEY_SIZE\)=.*,\1=${KEY_SIZE},g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_COUNTRY\)=.*,\1=\"KR\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_PROVINCE\)=.*,\1=\"NA\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_CITY\)=.*,\1=\"SEOUL\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_ORG\)=.*,\1=\"Server-CA\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_EMAIL\)=.*,\1=\"root@${LOCAL_IP}\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_CN\)=.*,\1=\"${USER_ID}\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_OU\)=.*,\1=\"${USER_ID}\",g" /etc/openvpn/easy-rsa/vars
+sed -i -e "s,\(KEY_NAME\)=.*,\1=\"${USER_ID}\",g" /etc/openvpn/easy-rsa/vars
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -A INPUT -p tcp --dport ${SERVICE_PORT} -j ACCEPT
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.243.0.0/24 -j ACCEPT
+iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+ufw allow ${SERVICE_PORT}/tcp
+
+echo "AUTOSTART=\"openvpn\"" >> /etc/default/openvpn
+
+cd /etc/openvpn/easy-rsa/
+source /etc/openvpn/easy-rsa/vars
+
+./clean-all                             #키 폴더 비움
+./build-dh
+if [[ ! -f "/etc/openvpn/easy-rsa/openssl.cnf" ]]; then
+  ln -s /etc/openvpn/easy-rsa/openssl-1.0.0.cnf \
+    /etc/openvpn/easy-rsa/openssl.cnf
+fi
+./pkitool --initca                     #ca 키 생성
+./pkitool --server server
+
+cat > /etc/openvpn/server.conf << EOF
+local ${LOCAL_IP}
+port ${SERVICE_PORT}
+proto tcp
+dev tun
+ca /etc/openvpn/easy-rsa/2.0/keys/ca.crt
+cert /etc/openvpn/easy-rsa/2.0/keys/server.crt
+key /etc/openvpn/easy-rsa/2.0/keys/server.key  # This file should be kept secret
+dh /etc/openvpn/easy-rsa/2.0/keys/dh2048.pem
+server 10.243.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1"
+push "dhcp-option DNS 168.126.63.1"
+client-config-dir ccd
+client-to-client
+;duplicate-cn
+keepalive 10 120
+comp-lzo
+max-clients 10
+user nobody
+group nogroup
+persist-key
+persist-tun
+status openvpn-status.log 30
+;log         openvpn.log
+;log-append  openvpn.log
+verb 3
+;mute 20
+EOF
+
+
+service openvpn restart
+
+#keygen logic
+export KEY_COUNTRY="KR"
+#export KEY_PROVINCE="CN"
+#export KEY_CITY="Inchon"
+export KEY_ORG="Personal"
+export KEY_EMAIL="${E_MAIL}"
+./pkitool ${USER_ID}
+cat > ${USER_ID}.ovpn << EOF
+<cert>
+`cat /etc/openvpn/easy-rsa/keys/${USER_ID}.crt | grep -v -G "^\s" | tail -n +3`
+</cert>
+
+<key>
+`cat /etc/openvpn/easy-rsa/keys/${USER_ID}.key`
+</key>
+
+dev tun
+proto tcp
+remote ${LOCAL_IP} 1194
+;remote ${LOCAL_IP} 443
+resolv-retry infinite
+nobind
+
+# (non-Windows only)
+user nobody
+group nogroup
+persist-key
+persist-tun
+
+<ca>
+`cat /etc/openvpn/easy-rsa/keys/ca.crt`
+</ca>
+
+ns-cert-type server
+comp-lzo
+verb 3
+;mute 20
+EOF
