@@ -22,5 +22,16 @@ def get_shadow(password,types="6",salt=None):
 
 
 if __name__=="__main__":
-  get_shadow(sys.argv[1])
+  import sys
+
+  salt=None
+
+  if len(sys.argv) <= 1:
+    print "Usage:\n # %s passwd (salt)" % sys.argv[0]
+    exit(0)
+    
+  if len(sys.argv) >= 3:
+    salt = sys.argv[2]
+
+  print get_shadow(sys.argv[1], salt=salt)
 
