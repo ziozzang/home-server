@@ -15,10 +15,13 @@ USER_PW=${USER_PW:-"loginme"}
 apt-get update -fy
 apt-get install -fy pptpd
 
-cat >> /etc/pptpd.conf << EOF
+IPF=`cat /etc/ppp/pptpd-options  | grep "^localip" | wc -l`
+if [[ "$IPF" -eq "0" ]]; then
+  cat >> /etc/pptpd.conf << EOF
 localip 10.244.0.1
 remoteip 10.244.0.100-200
 EOF
+fi
 
 IPF=`cat /etc/ppp/chap-secrets  | grep "${USER_ID}" | grep "pptpd" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
