@@ -17,11 +17,12 @@ fi
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
 apt-get update -fy
-apt-get install -fy openswan
 cat <<EOF | debconf-set-selections
 openswan openswan/install_x509_certificate true
 openswan openswan/how_to_get_x509_certificate create
 EOF
+
+apt-get install -fy openswan
 
 
 cp /etc/ipsec.d/examples/l2tp-psk.conf /etc/ipsec.d/l2tp-psk.conf
