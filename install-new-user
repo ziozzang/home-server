@@ -30,6 +30,7 @@ chmod -R 700 /home/${USER_ID}/.ssh
 
 
 locale-gen ko_KR.UTF-8
+wget -qO- https://raw.github.com/ziozzang/home-server/master/install-ntpsync | bash
 
 # Delete SELF
 rm -f /etc/rc.run_once
