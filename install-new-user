@@ -9,9 +9,7 @@ KEY_URL=${KEY_URL:-"http://home.jioh.net/pxe/authorized_keys"}
 
 sed -i -e "s,^\(exit\),#\1,g" /etc/rc.local
 cat >> /etc/rc.local << EOF
-if[ -f "/etc/rc.run_once" ]; then
-  /bin/bash /etc/rc.run_once >> /var/log/rc.run_once.log 2>1 &
-fi
+cat /etc/rc.run_once 2> /dev/null | /bin/bash  >> /var/log/rc.run_once.log 2>1 &
 EOF
 
 cat > /etc/rc.run_once << EOF
