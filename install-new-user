@@ -1,0 +1,28 @@
+#!/bin/bash
+
+[[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
+
+
+sed -i -e "s,^\(exit\),#\1,g" /etc/rc.local
+cat >> /etc/rc.local << EOF
+if[ -f "/etc/rc.run_once" ]; then
+  /bin/bash /etc/rc.run_once >> /var/log/rc.run_once.log 2>1 &
+fi
+EOF
+
+cat > /etc/rc.run_once << EOF
+#!/bin/bash
+cd /root/
+mkdir .ssh
+cd .ssh
+wget http://home.jioh.net/pxe/authorized_keys
+chmod -R 700 .ssh
+
+cp -rf /root/.ssh /home/ziozzang
+chown -R ziozzang:ziozzang /home/ziozzang/.ssh
+chmod -R 700 /home/ziozzang/.ssh
+locale-gen ko_KR.UTF-8
+
+# Delete SELF
+rm -f /etc/rc.run_once
+EOF
