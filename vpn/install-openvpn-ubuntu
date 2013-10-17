@@ -59,10 +59,10 @@ local ${LOCAL_IP}
 port ${SERVICE_PORT}
 proto tcp
 dev tun
-ca /etc/openvpn/easy-rsa/2.0/keys/ca.crt
-cert /etc/openvpn/easy-rsa/2.0/keys/server.crt
-key /etc/openvpn/easy-rsa/2.0/keys/server.key  # This file should be kept secret
-dh /etc/openvpn/easy-rsa/2.0/keys/dh2048.pem
+ca /etc/openvpn/easy-rsa/keys/ca.crt
+cert /etc/openvpn/easy-rsa/keys/server.crt
+key /etc/openvpn/easy-rsa/keys/server.key  # This file should be kept secret
+dh /etc/openvpn/easy-rsa/keys/dh${KEY_SIZE}.pem
 server 10.243.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
 push "redirect-gateway def1"
