@@ -1,8 +1,14 @@
 #!/bin/bash
+#
+# Code by Jioh L. Jung
+#
+# Usage
+#  wget -qO- https://raw.github.com/ziozzang/home-server/master/module/gen_sshkey | bash -s key_file_name
+#
 
 function pkg_install {
   MODULENAME=$1
-  echo "${MODULENAME}"
+  #echo "${MODULENAME}"
   INSTALLED=`dpkg --get-selections | grep "${MODULENAME}" | grep "install" | wc -l`
   if [ "$INSTALLED" -eq "0" ]; then
     [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
