@@ -18,7 +18,7 @@ LOCAL_IP=`ifconfig eth0 | grep -m 1 'inet addr:' | cut -d: -f2 | awk '{print $1}
 apt-get update -fy
 apt-get install -fy pptpd
 
-IPF=`cat /etc/ppp/pptpd-options  | grep "^localip" | wc -l`
+IPF=`cat /etc/pptpd.conf | grep "^localip" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
   cat >> /etc/pptpd.conf << EOF
 localip ${LOCAL_IP}
