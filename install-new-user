@@ -18,10 +18,10 @@ mkdir -p /root/.ssh
 cd /root/.ssh
 rm -f /root/.ssh/authorized_keys
 wget -O authorized_keys ${KEY_URL}
-cat > /root/.ssh/config << EOF
+cat > /root/.ssh/config << EFF
 Host *
     StrictHostKeyChecking no
-EOF
+EFF
 chmod -R 700 /root/.ssh
 
 cp -rf /root/.ssh /home/${USER_ID}
