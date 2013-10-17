@@ -40,7 +40,7 @@ ufw allow ${SERVICE_PORT}/tcp
 iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
 wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserve-iptables-ubuntu | bash
 
-echo "AUTOSTART=\"openvpn\"" >> /etc/default/openvpn
+#echo "AUTOSTART=\"openvpn\"" >> /etc/default/openvpn
 
 cd /etc/openvpn/easy-rsa/
 source /etc/openvpn/easy-rsa/vars
