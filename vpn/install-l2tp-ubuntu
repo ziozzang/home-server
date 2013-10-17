@@ -18,8 +18,9 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 
 apt-get update -fy
 cat <<EOF | debconf-set-selections
-openswan openswan/install_x509_certificate true
-openswan openswan/how_to_get_x509_certificate create
+openswan openswan/install_x509_certificate select true
+openswan openswan/how_to_get_x509_certificate select create
+openswan openswan/restart select true
 EOF
 
 apt-get install -fy openswan
