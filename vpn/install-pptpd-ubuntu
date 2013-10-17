@@ -12,14 +12,18 @@ USER_PW=${USER_PW:-"loginme"}
 
 
 # ==================================================
+[[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
+LOCAL_IP=`ifconfig eth0 | grep -m 1 'inet addr:' | cut -d: -f2 | awk '{print $1}'`
+
 apt-get update -fy
 apt-get install -fy pptpd
 
 IPF=`cat /etc/ppp/pptpd-options  | grep "^localip" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
   cat >> /etc/pptpd.conf << EOF
-localip 10.244.0.1
+localip ${LOCAL_IP}
 remoteip 10.244.0.100-200
+netmask 255.255.255.0
 EOF
 fi
 
