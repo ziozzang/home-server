@@ -3,6 +3,7 @@ SERVICE_PORT=${SERVICE_PORT:-"1194"}
 KEY_SIZE=${KEY_SIZE:-"1024"}
 USER_ID=${USER_ID:-"ziozzang"}
 E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
+USER_PW=${USER_PW:-"loginme"}
 
 #-----------
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
