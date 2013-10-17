@@ -31,11 +31,14 @@ if [[ "$IPF" -eq "0" ]]; then
 fi
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
-iptables -A INPUT -p tcp --dport ${SERVICE_PORT} -j ACCEPT
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 10.243.0.0/24 -j ACCEPT
-iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+#iptables -A INPUT -p tcp --dport ${SERVICE_PORT} -j ACCEPT
+#iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+#iptables -A FORWARD -s 10.243.0.0/24 -j ACCEPT
+#iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+
 ufw allow ${SERVICE_PORT}/tcp
+iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserve-iptables-ubuntu | bash
 
 echo "AUTOSTART=\"openvpn\"" >> /etc/default/openvpn
 
@@ -103,8 +106,7 @@ cat > ${USER_ID}.ovpn << EOF
 
 dev tun
 proto tcp
-remote ${LOCAL_IP} 1194
-;remote ${LOCAL_IP} 443
+remote ${LOCAL_IP} ${SERVICE_PORT}
 resolv-retry infinite
 nobind
 
