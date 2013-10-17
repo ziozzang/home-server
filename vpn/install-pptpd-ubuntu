@@ -29,10 +29,11 @@ fi
 
 IPF=`cat /etc/ppp/pptpd-options  | grep "^ms-dns" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
-cat >> /etc/ppp/pptpd-options << EOF
+  cat >> /etc/ppp/pptpd-options << EOF
 ms-dns 8.8.8.8
 ms-dns 8.8.4.4
 EOF
+fi
 
 
 IPF=`cat /etc/sysctl.conf  | grep "^net.ipv4.ip_forward" | wc -l`
