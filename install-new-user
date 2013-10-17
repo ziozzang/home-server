@@ -20,7 +20,7 @@ mkdir -p /root/.ssh
 cd /root/.ssh
 rm -f /root/.ssh/authorized_keys
 wget -O authorized_keys ${KEY_URL}
-cat > 
+cat > /root/.ssh/config << EOF
 Host *
     StrictHostKeyChecking no
 EOF
