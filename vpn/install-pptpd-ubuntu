@@ -51,3 +51,4 @@ wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserv
 ufw allow ${SERVICE_PORT}/tcp
 service pptpd restart
 update-rc.d pptpd defaults
+echo "AUTOSTART=\"pptpd\"" >> /etc/default/pptpd
