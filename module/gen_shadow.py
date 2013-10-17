@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import crypt
 import string
 from random import sample, choice
@@ -17,4 +19,8 @@ def get_shadow(password,types="6",salt=None):
   if salt is None:
     salt = gen_salt()
   return crypt.crypt(password, "$%s$%s$" % (types,salt))
+
+
+if __name__=="__main__":
+  get_shadow(sys.argv[1])
 
