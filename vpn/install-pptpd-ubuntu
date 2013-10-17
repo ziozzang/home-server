@@ -22,7 +22,7 @@ IPF=`cat /etc/pptpd.conf | grep "^localip" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
   cat >> /etc/pptpd.conf << EOF
 localip ${LOCAL_IP}
-remoteip 10.244.0.100-200
+remoteip 10.244.0.10-240
 netmask 255.255.255.0
 EOF
 fi
