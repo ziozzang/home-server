@@ -1,10 +1,17 @@
 #!/bin/bash
+#
+# pptpd automatic provisioning
+# - code by Jioh L. Jung (ziozzang@gmail.com)
+#
+
 SERVICE_PORT=${SERVICE_PORT:-"1723"}
 KEY_SIZE=${KEY_SIZE:-"1024"}
 USER_ID=${USER_ID:-"ziozzang"}
 E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
 USER_PW=${USER_PW:-"loginme"}
 
+
+# ==================================================
 apt-get update -fy
 apt-get install -fy pptpd
 
@@ -13,16 +20,20 @@ localip 10.244.0.1
 remoteip 10.244.0.100-200
 EOF
 
-cat >> /etc/ppp/chap-secrets << EOF
-${USER_ID} pptp ${USER_PW} *
+IPF=`cat /etc/ppp/chap-secrets  | grep "${USER_ID}" | grep "pptpd" | wc -l`
+if [[ "$IPF" -eq "0" ]]; then
+  cat >> /etc/ppp/chap-secrets << EOF
+${USER_ID} pptpd ${USER_PW} *
 EOF
+fi
 
+IPF=`cat /etc/ppp/pptpd-options  | grep "^ms-dns" | wc -l`
+if [[ "$IPF" -eq "0" ]]; then
 cat >> /etc/ppp/pptpd-options << EOF
 ms-dns 8.8.8.8
 ms-dns 8.8.4.4
 EOF
 
-service pptpd restart
 
 IPF=`cat /etc/sysctl.conf  | grep "^net.ipv4.ip_forward" | wc -l`
 if [[ "$IPF" -eq "0" ]]; then
@@ -36,5 +47,5 @@ iptables -I INPUT -s 10.244.0.0/8 -i ppp0 -j ACCEPT
 iptables --append FORWARD --in-interface eth0 -j ACCEPT
 
 ufw allow ${SERVICE_PORT}/tcp
-service pptpd start
+service pptpd restart
 update-rc.d pptpd defaults
