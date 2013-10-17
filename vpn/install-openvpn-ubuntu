@@ -37,7 +37,12 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 #iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
 
 ufw allow ${SERVICE_PORT}/tcp
-iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+
+IPF=`iptables-save  | grep "10.243.0.0" | wc -l`
+if [[ "$IPF" -eq "0" ]]; then
+  iptables -t nat -A POSTROUTING -s 10.243.0.0/24 -o eth0 -j MASQUERADE
+fi
+
 wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserve-iptables-ubuntu | bash
 
 #echo "AUTOSTART=\"openvpn\"" >> /etc/default/openvpn
