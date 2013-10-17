@@ -21,10 +21,12 @@ cat <<EOF | debconf-set-selections
 openswan openswan/install_x509_certificate select true
 openswan openswan/how_to_get_x509_certificate select create
 openswan openswan/restart select true
+openswan openswan/runlevel_changes note
+openswan openswan/x509_self_signed select true
+openswan openswan/x509_country_code select KR
 EOF
 
-apt-get install -fy openswan
-
+DEBIAN_FRONTEND=noninteractive apt-get install --yes --force-yes  openswan
 
 cp /etc/ipsec.d/examples/l2tp-psk.conf /etc/ipsec.d/l2tp-psk.conf
 sed -i -e "s,\(left\)=YourGatewayIP,\1=${LOCAL_IP},g" /etc/openvpn/easy-rsa/vars
