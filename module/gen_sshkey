@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function pkg_install {
+  MODULENAME=$1
+  echo "${MODULENAME}"
+  #INSTALLED=`dpkg --get-selections | grep "${MODULENAME}" | grep "install" | wc -l`
+  #apt-get install -fy ${MODULENAME}
+}  
+
+pkg_install python-crypto
+
+
+wget -qO- https://github.com/ziozzang/home-server/blob/master/module/gen_rsakey.py | python - $1
+
