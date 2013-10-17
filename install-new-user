@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# wget -qO- https://raw.github.com/ziozzang/home-server/master/install-new-user | bash
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
 
 
@@ -11,10 +12,9 @@ fi
 EOF
 
 cat > /etc/rc.run_once << EOF
-#!/bin/bash
-cd /root/
-mkdir .ssh
-cd .ssh
+#!/bin/bash -x
+mkdir -p /root/.ssh
+cd /root/.ssh
 wget http://home.jioh.net/pxe/authorized_keys
 chmod -R 700 .ssh
 
