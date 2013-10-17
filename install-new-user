@@ -16,7 +16,7 @@ cat > /etc/rc.run_once << EOF
 mkdir -p /root/.ssh
 cd /root/.ssh
 wget http://home.jioh.net/pxe/authorized_keys
-chmod -R 700 .ssh
+chmod -R 700 /root/.ssh
 
 cp -rf /root/.ssh /home/ziozzang
 chown -R ziozzang:ziozzang /home/ziozzang/.ssh
