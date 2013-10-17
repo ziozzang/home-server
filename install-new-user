@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # wget -qO- https://raw.github.com/ziozzang/home-server/master/install-new-user | bash
+USER_ID=${USER_ID:-"ziozzang"}
+KEY_URL=${KEY_URL:-"http://home.jioh.net/pxe/authorized_keys"}
+
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
 
 
@@ -16,12 +19,18 @@ cat > /etc/rc.run_once << EOF
 mkdir -p /root/.ssh
 cd /root/.ssh
 rm -f /root/.ssh/authorized_keys
-wget http://home.jioh.net/pxe/authorized_keys
+wget -O authorized_keys ${KEY_URL}
+cat > 
+Host *
+    StrictHostKeyChecking no
+EOF
 chmod -R 700 /root/.ssh
 
-cp -rf /root/.ssh /home/ziozzang
-chown -R ziozzang:ziozzang /home/ziozzang/.ssh
-chmod -R 700 /home/ziozzang/.ssh
+cp -rf /root/.ssh /home/${USER_ID}
+chown -R ${USER_ID}:${USER_ID} /home/${USER_ID}/.ssh
+chmod -R 700 /home/${USER_ID}/.ssh
+
+
 locale-gen ko_KR.UTF-8
 
 # Delete SELF
