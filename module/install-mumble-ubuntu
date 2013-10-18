@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat > /etc/apt/sources.list.d/mumble  << EOF
+deb http://ppa.launchpad.net/mumble/release/ubuntu precise main 
+deb-src http://ppa.launchpad.net/mumble/release/ubuntu precise main
+EOF
+
+apt-get update -fy
+apt-get install -fy mumble
