@@ -2,8 +2,8 @@
 # MSTMP for Personla use.
 
 USER_ID=${USER_ID:-"ziozzang"}
-TARGET_ACCOUNT=${TARGET_ACCOUNT:-${USER_ID}}
-E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
+TARGET_ACCOUNT=${TARGET_ACCOUNT:-"${USER_ID}"}
+E_MAIL=${E_MAIL:-"${USER_ID}@gmail.com"}
 USER_PW=${USER_PW:-"loginme"}
 
 apt-get install -fy msmtp
