@@ -87,19 +87,19 @@ pppoptfile = /etc/ppp/options.xl2tpd
 EOF
 
 cat > /etc/ppp/options.xl2tpd << EOF
-require-mschap-v2
-ms-dns 168.126.63.1
-asyncmap 0
+ipcp-accept-local
+ipcp-accept-remote
+ms-dns 8.8.8.8
+noccp
 auth
 crtscts
+idle 1800
+mtu 1410
+mru 1410
+nodefaultroute 
 lock
-hide-password
-modem
-debug
-name l2tpd
 proxyarp
-lcp-echo-interval 30
-lcp-echo-failure 4
+connect-delay 5000
 EOF
 
 cat >> /etc/ppp/chap-secrets << EOF
