@@ -32,6 +32,8 @@ if [[ "$IPF" -eq "0" ]]; then
   cat >> /etc/ppp/chap-secrets << EOF
 ${USER_ID} pptpd ${USER_PW} *
 EOF
+  chown root:root /etc/ppp/chap-secrets
+  chmod 740 /etc/ppp/chap-secrets
 fi
 
 IPF=`cat /etc/ppp/pptpd-options  | grep "^ms-dns" | wc -l`
