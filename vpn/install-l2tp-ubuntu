@@ -1,5 +1,5 @@
 #!/bin/bash
-SERVICE_PORT=${SERVICE_PORT:-"1723"}
+SERVICE_PORT=${SERVICE_PORT:-"1701"}
 KEY_SIZE=${KEY_SIZE:-"1024"}
 USER_ID=${USER_ID:-"ziozzang"}
 E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
