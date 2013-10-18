@@ -28,21 +28,53 @@ EOF
 
 DEBIAN_FRONTEND=noninteractive apt-get install --yes --force-yes  openswan
 
-cp /etc/ipsec.d/examples/l2tp-psk.conf /etc/ipsec.d/l2tp-psk.conf
-sed -i -e "s,\(left\)=YourGatewayIP,\1=${LOCAL_IP},g" /etc/openvpn/easy-rsa/vars
-sed -i -e "s,\(leftnexthop\)=YourGatewayIP,\1=${DEFAULT_GW},g" /etc/openvpn/easy-rsa/vars
-echo "include /etc/ipsec.d/l2tp-psk.conf" >> /etc/ipsec.conf
+#cp /etc/ipsec.d/examples/l2tp-psk.conf /etc/ipsec.d/l2tp-psk.conf
+#sed -i -e "s,\(left\)=YourGatewayIP,\1=${LOCAL_IP},g" /etc/ipsec.conf
+#sed -i -e "s,\(leftnexthop\)=YourGatewayIP,\1=${DEFAULT_GW},g" /etc/ipsec.conf
+#echo "include /etc/ipsec.d/l2tp-psk.conf" >> /etc/ipsec.conf
+cat > /etc/ipsec.conf << EOF
+config setup
+    nat_traversal=yes
+    protostack=netkey
+    #plutostderrlog=/tmp/log.txt (for debugging)
 
+conn L2TP-PSK
+    authby=secret
+    pfs=no
+    rekey=no
+    type=tunnel
+    esp=aes128-sha1
+    ike=aes128-sha-modp1024
+    ikelifetime=8h
+    keylife=1h
+    left=${LOCAL_IP}
+    leftnexthop=%defaultroute
+    leftprotoport=17/1701
+    right=%any
+    rightprotoport=17/%any
+    rightsubnetwithin=0.0.0.0/0
+    auto=add
+    dpddelay=30
+    dpdtimeout=120
+    dpdaction=clear
+
+EOF
 service ipsec restart
 update-rc.d ipsec defaults
 
 #====
 
 apt-get install -fy xl2tpd ppp
+
+
+
+cat > /etc/ipsec.secrets << EOF
+%any %any: PSK "${USER_PW}"
+EOF
+
 mv /etc/xl2tpd/xl2tpd.conf /etc/xl2tpd/xl2tpd.conf.sample
 cat > /etc/xl2tpd/xl2tpd.conf << EOF
-[global]   
-port = ${SERVICE_PORT}
+[global]
 
 [lns default]    
 ip range = 10.245.0.2-10.245.0.200
@@ -81,7 +113,9 @@ if [[ "$IPF" -eq "0" ]]; then
 fi
 wget -qO- https://raw.github.com/ziozzang/home-server/master/vpn/install-preserve-iptables-ubuntu | bash
 
-ufw allow ${SERVICE_PORT}/tcp
+ufw allow 500/udp
+ufw allow 4500/udp
+ufw allow 1701/udp
 
 service xl2tpd restart
 update-rc.d xl2tpd defaults
