@@ -1,0 +1,18 @@
+#!/bin/bash
+# MGMT Web API for Ubuntu pptpd
+
+function pkg_install {
+  MODULENAME=$1
+  #echo "${MODULENAME}"
+  INSTALLED=`dpkg --get-selections | grep "${MODULENAME}" | grep "install" | wc -l`
+  if [ "$INSTALLED" -eq "0" ]; then
+    [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
+    apt-get install -fy ${MODULENAME}
+  fi
+}
+
+pkg_install python-pip
+
+pip install flask
+
+# TODO
