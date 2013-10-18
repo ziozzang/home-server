@@ -1,0 +1,22 @@
+#!/bin/bash
+# MSTMP for Personla use.
+
+USER_ID=${USER_ID:-"ziozzang"}
+TARGET_ACCOUNT=${TARGET_ACCOUNT:-${USER_ID}}
+E_MAIL=${E_MAIL:-"ziozzang@gmail.com"}
+USER_PW=${USER_PW:-"loginme"}
+
+apt-get install -fy msmtp
+
+cat > ~${TARGET_ACCOUNT}/.msmtprc << EOF
+account gmail
+tls on
+auth on
+host smtp.gmail.com
+port 587
+user ${E_MAIL}
+from ${E_MAIL}
+password ${USER_PW}
+EOF
+chown ${TARGET_ACCOUNT}:${TARGET_ACCOUNT} ~${TARGET_ACCOUNT}/.msmtprc
+chmod 700 ~${TARGET_ACCOUNT}/.msmtprc
