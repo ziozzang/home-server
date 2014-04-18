@@ -31,6 +31,7 @@ chmod -R 700 /home/${USER_ID}/.ssh
 
 locale-gen ko_KR.UTF-8
 wget -qO- https://raw.github.com/ziozzang/home-server/master/install-ntpsync | bash
+ufw allow 22
 
 cat > /etc/sudoers.d/${USER_ID} << EFF
 ${USER_ID} ALL=(ALL) NOPASSWD: ALL
