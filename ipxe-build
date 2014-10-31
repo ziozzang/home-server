@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Script for building iPXE for home boot.
+
+sudo apt-get install -fy build-essential binutils perl git nasm
+cd ~
+mkdir -p src
+cd src
+
+git clone git://git.ipxe.org/ipxe.git
+
+cd ipxe
+
+cat > menu.ipxe << EOF
+#!ipxe
+dhcp net0
+chain http://10.98.76.1:9080/pxe/default
+
+EOF
+
+cd src
+make bin/undionly.kkkpxe EMBED=../menu.ipxe
+
+sudo apt-get install -fy tftpd-hpa
+sudo service tftpd-hpa restart
+
+cp ~/src/ipxe/src/bin/undionly.kkkpxe /var/lib/tftpboot/ipxelinux.0
