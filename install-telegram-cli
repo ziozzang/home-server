@@ -1,0 +1,17 @@
+#!/bin/bash
+# Install necessary files
+apt-get install -fy git-core build-essential
+apt-get install -fy libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make
+
+# Clone Repo
+git clone --recursive https://github.com/vysheng/tg.git
+
+# Build
+cd tg
+./configure
+make
+
+# Install
+mkdir -p /etc/telegram-cli/
+cp tg-server.pub /etc/telegram-cli/server.pub
+cp bin/telegram-cli /usr/bin/
