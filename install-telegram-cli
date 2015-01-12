@@ -15,3 +15,11 @@ make
 mkdir -p /etc/telegram-cli/
 cp tg-server.pub /etc/telegram-cli/server.pub
 cp bin/telegram-cli /usr/bin/
+
+
+exit 0
+wget https://bugs.launchpad.net/~miry/+archive/ppa/+files/telegram-cli_0.0.20140125-1_amd64.deb
+sudo dpkg -i ./telegram-cli_0.0.20140125-1_amd64.deb
+sudo apt-get -f install
+
+telegram -k /etc/telegram/tg.pub
