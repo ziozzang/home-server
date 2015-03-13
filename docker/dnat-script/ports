@@ -1,4 +1,4 @@
 # Sample DNAT Ports List
 # Column is devided by space.
-#protcoll       wan_port        destination_port        destination_ip
-tcp   2232   22   172.17.0.7
+#protcoll       wan_port        destination_port        docker_container_id
+tcp   2232   22   container_name_or_id_here
