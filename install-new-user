@@ -7,6 +7,16 @@ KEY_URL=${KEY_URL:-"http://home.jioh.net/pxe/authorized_keys"}
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
 
 
+. /etc/lsb_release || true
+
+if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
+  # Ubuntu
+  if [ "${DISTRIB_RELEASE}" == "16.04" ]; then
+    sed -i -e "s,^\(GRUB_CMDLINE_LINUX=\"\).*\",\1net.ifnames=0 biosdevname=0\",g" /etc/default/grub
+    update-grub
+  fi
+fi
+
 sed -i -e "s,^\(exit\),#\1,g" /etc/rc.local
 cat >> /etc/rc.local << EOF
 cat /etc/rc.run_once 2> /dev/null | /bin/bash  >> /var/log/rc.run_once.log 2>1 &
