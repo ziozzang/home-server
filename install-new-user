@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # wget -qO- https://raw.github.com/ziozzang/home-server/master/install-new-user | bash
 USER_ID=${USER_ID:-"ziozzang"}
