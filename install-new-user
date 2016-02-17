@@ -6,18 +6,6 @@ KEY_URL=${KEY_URL:-"http://home.jioh.net/pxe/authorized_keys"}
 
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
 
-# return eth0
-#wget -qO- https://raw.github.com/ziozzang/home-server/master/set-eth-nic-name | bash
-. /etc/lsb_release || true
-
-if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
-  # Ubuntu
-  if [ "${DISTRIB_RELEASE}" == "16.04" ]; then
-    sed -i -e "s,^\(GRUB_CMDLINE_LINUX=\"\).*\",\1net.ifnames=0 biosdevname=0\",g" /etc/default/grub
-    update-grub
-  fi
-fi
-
 # Update rc.local
 
 sed -i -e "s,^\(exit\),#\1,g" /etc/rc.local
@@ -75,3 +63,20 @@ chmod 440 /etc/sudoers.d/${USER_ID}
 # Delete SELF
 rm -f /etc/rc.run_once
 EOF
+
+# return eth0
+#wget -qO- https://raw.github.com/ziozzang/home-server/master/set-eth-nic-name | bash
+. /etc/lsb_release || true
+
+if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
+  # Ubuntu
+  if [ "${DISTRIB_RELEASE}" == "16.04" ]; then
+    mv /etc/rc.run_once /etc/rc.run_once1
+    cat > /etc/rc.run_once << EOF
+    sed -i -e "s,^\(GRUB_CMDLINE_LINUX=\"\).*\",\1net.ifnames=0 biosdevname=0\",g" /etc/default/grub
+    update-grub
+    mv /etc/rc.run_once1 /etc/rc.run_once
+    reboot
+    EOF
+  fi
+fi
