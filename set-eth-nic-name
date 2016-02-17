@@ -1,0 +1,11 @@
+#!/bin/bash
+
+. /etc/lsb_release || true
+
+if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
+  # Ubuntu
+  if [ "${DISTRIB_RELEASE}" == "16.04" ]; then
+    sed -i -e "s,^\(GRUB_CMDLINE_LINUX=\"\).*\",\1net.ifnames=0 biosdevname=0\",g" /etc/default/grub
+    update-grub
+  fi
+fi
