@@ -6,7 +6,8 @@ KEY_URL=${KEY_URL:-"http://home.jioh.net/pxe/authorized_keys"}
 
 [[ "$(id -u)" -eq 0 ]] || (echo "FATAL: Root privilege is required."; exit 1)
 
-
+# return eth0
+#wget -qO- https://raw.github.com/ziozzang/home-server/master/set-eth-nic-name | bash
 . /etc/lsb_release || true
 
 if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
@@ -16,6 +17,8 @@ if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
     update-grub
   fi
 fi
+
+# Update rc.local
 
 sed -i -e "s,^\(exit\),#\1,g" /etc/rc.local
 cat >> /etc/rc.local << EOF
@@ -54,8 +57,6 @@ chmod 600 /home/${USER_ID}/.ssh/known_hosts
 locale-gen ko_KR.UTF-8
 wget -qO- https://raw.github.com/ziozzang/home-server/master/install-ntpsync | bash
 
-# return eth0
-wget -qO- https://raw.github.com/ziozzang/home-server/master/set-eth-nic-name | bash
 
 if [ ! -f "/usr/sbin/ufw" ]; then
   apt-get install -fy ufw
