@@ -78,6 +78,6 @@ if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
     update-grub
     mv /etc/rc.run_once1 /etc/rc.run_once
     reboot
-    EOF
+EOF
   fi
 fi
