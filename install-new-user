@@ -43,13 +43,9 @@ chmod 600 /home/${USER_ID}/.ssh/known_hosts
 locale-gen ko_KR.UTF-8
 wget -qO- https://raw.github.com/ziozzang/home-server/master/install-ntpsync | bash
 
-apt-get install -fy ufw
-
-if [ -f "/usr/sbin/ufw" ]; then
-  cnt=\`ufw status | grep 22 | wc -l\`
-  if [[ "${cnt}" -eq "0" ]]; then
-    /usr/sbin/ufw allow 22
-  fi
+cnt=`ufw status | grep 22 | wc -l`
+if [[ "${cnt}" -eq "0" ]]; then
+  ufw allow 22
 fi
 
 cat > /etc/sudoers.d/${USER_ID} << EFF
