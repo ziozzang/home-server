@@ -70,6 +70,7 @@ EOF
 
 if [ "${DISTRIB_ID,,}" == "ubuntu" ]; then
   # Ubuntu
+  echo "Ubuntu - ${DISTRIB_RELEASE}"
   if [ "${DISTRIB_RELEASE}" == "16.04" ]; then
     mv /etc/rc.run_once /etc/rc.run_once1
     cat > /etc/rc.run_once << EOF
