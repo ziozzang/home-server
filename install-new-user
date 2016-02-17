@@ -19,7 +19,7 @@ cat > /etc/rc.run_once << EOF
 nc -z 8.8.8.8 53
 while [ "\$?" == "" ] 
         do
-        sleep 5
+        sleep 1
         nc -z 8.8.8.8 53
 done
 
@@ -46,6 +46,10 @@ wget -qO- https://raw.github.com/ziozzang/home-server/master/install-ntpsync | b
 
 # return eth0
 wget -qO- https://raw.github.com/ziozzang/home-server/master/set-eth-nic-name | bash
+
+if [ ! -f "/usr/sbin/ufw" ]; then
+  apt-get install -fy ufw
+fi
 
 cnt=`ufw status | grep 22 | wc -l`
 if [[ "${cnt}" -eq "0" ]]; then
